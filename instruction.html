@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Instructions</title>
+    <link rel="stylesheet" href="instruction.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Quiz Rules</h2>
+        <ul>
+            <li>🕒 You will have <b>only 15 seconds</b> per question.</li>
+            <li>✅ Once you select your answer, <b>it can't be undone.</b></li>
+            <li>⏳ You can't select any option <b>once time goes off.</b></li>
+            <li>🚫 <b>Exiting the quiz</b> while playing is not allowed.</li>
+            <li>⭐ You'll earn points based on your <b>correct answers.</b></li>
+        </ul>
+        <div class="buttons">
+            <button class="exit" onclick="exitQuiz()">Exit Quiz</button>
+            <button class="continue" onclick="startQuiz()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        function exitQuiz() {
+            alert("You exited the quiz!");
+            window.location.href = "home.html"; // Redirect to home page
+        }
+
+        function startQuiz() {
+            window.location.href = "quiz.html"; // Redirect to quiz page
+        }
+    </script>
+</body>
+</html>

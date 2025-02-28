@@ -24,11 +24,13 @@
         .question {
             font-size: 1.2em;
             margin-bottom: 20px;
+           
         }
         .options {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            
         }
         .option {
             padding: 10px;
@@ -45,6 +47,7 @@
             font-size: 1.2em;
             margin-bottom: 20px;
             color: #ff5722;
+            margin-left: 300px;
         }
         .result {
             font-size: 1.5em;
@@ -63,15 +66,32 @@
         .restart-btn:hover {
             background-color: #0056b3;
         }
+        .heading,.timer{
+            display: flex;
+            display:inline ;
+        }
+        .heading{
+            font-size: 25px;
+            font-weight: 10em;
+
+        }
+        .space{
+            border: 1px solid black;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="quiz-container">
-        <div class="timer">Time Left: <span id="time">30</span>s</div>
+        <p class="heading">Pheonix Quiz</p>
+        <div class="timer">Time Left : <span id="time">15</span>s</div>
+        <div class="space"></div>
         <div class="question">Question will appear here</div>
         <div class="options"></div>
         <div class="result" style="display: none;">Your score: <span id="score">0</span></div>
-        <button class="restart-btn" style="display: none;">Restart Quiz</button>
+        <button class="restart-btn" onclick="quiz()" style="display: none;">Restart Quiz</button>
+        <button class="restart-btn" onclick="quiz()" style="display: none ;">Quit Quiz</button>
     </div>
     <script>
         const quizData = [
@@ -93,7 +113,7 @@
         ];
         let currentQuestion = 0;
         let score = 0;
-        let timeLeft = 30;
+        let timeLeft = 15;
         let timerInterval;
         const timerEl = document.getElementById('time');
         const questionEl = document.querySelector('.question');
@@ -107,7 +127,7 @@
                 return;
             }
             clearInterval(timerInterval);
-            timeLeft = 30; 
+            timeLeft = 15; 
             timerEl.textContent = timeLeft;
             startTimer(); 
             const currentQuiz = quizData[currentQuestion];
@@ -144,12 +164,14 @@
             optionsEl.style.display = 'none';
             resultEl.style.display = 'block';
             scoreEl.textContent = score;
+            timerEl.style.display = 'none';
             restartBtn.style.display = 'block';
+            document.querySelector('.timer').style.display = 'none';
         }
         restartBtn.addEventListener('click', () => {
             currentQuestion = 0;
             score = 0;
-            timeLeft = 30;
+            timeLeft = 15;
             timerEl.textContent = timeLeft;
             questionEl.style.display = 'block';
             optionsEl.style.display = 'block';
@@ -158,6 +180,9 @@
             loadQuestion();
         });
         loadQuestion();
+        function quiz(){
+        window.location.href = "instruction.html";
+    }
     </script>
 </body>
 </html>

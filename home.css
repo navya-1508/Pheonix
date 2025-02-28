@@ -1,0 +1,15 @@
+h1 {
+    font-size: 60px; /* Adjust as needed */
+    font-weight: bold;
+    text-align: center;
+    color: #c2c2c2; /* Dark gray */
+    margin-top: 270px;
+    transition: font-size 0.5s ease-in-out;
+    &:hover{
+        cursor: pointer;
+        font-size: 80px;
+    }
+}
+body{
+    background-color: black;
+}
