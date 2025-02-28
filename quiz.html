@@ -1,9 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pheonix Quiz</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: blue;
             color: #333;
             margin: 0;
             padding: 0;
@@ -14,7 +18,7 @@
         }
         .quiz-container {
             background: #fff;
-            border-radius: 12px;
+            border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 600px;
@@ -24,13 +28,17 @@
         .question {
             font-size: 1.2em;
             margin-bottom: 20px;
-           
+            font-weight: bold;
+            text-align: left;
+            width: 100%;
+            word-wrap: break-word;
+            margin-top: 10px;
         }
         .options {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            
+            margin-bottom: 20px;
         }
         .option {
             padding: 10px;
@@ -39,115 +47,201 @@
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
         }
+        .heading {
+            font-size: 25px;
+            font-weight: bold;
+            margin-right: 290px;
+        }
         .option:hover {
             background-color: #007bff;
             color: #fff;
         }
+        .option.correct {
+            background-color: #28a745 !important;
+            color: white;
+            border-color: green;
+        }
+        .option.incorrect {
+            background-color: #dc3545 !important;
+            color: white;
+            border-color: red;
+        }
         .timer {
             font-size: 1.2em;
             margin-bottom: 20px;
-            color: #ff5722;
-            margin-left: 300px;
+            color: blue;
+            border-radius: 5px;
+            padding: 7px;
+            background-color: #a6caf1;
         }
+        .digits{
+                background-color: black;
+                padding: 3px 10px;
+                color:white;
+                width: 40px;
+                /* height: 7vh; */
+                border-radius: 5px;
+            }
         .result {
             font-size: 1.5em;
             color: #4caf50;
+            display: none;
         }
-        .restart-btn {
+        .next-btn{
+            &:hover{
+                cursor: pointer;
+            }
+        }
+        .restart-btn, .quit-btn {
             background-color: #007bff;
             color: #fff;
             border: none;
             padding: 10px 20px;
             font-size: 1em;
             border-radius: 8px;
+            display: inline;
             cursor: pointer;
             margin-top: 20px;
+            display: none;
+        }.quit-btn{
+            background-color: white;
+            color: blue;
+            border: 1px solid blue;
         }
         .restart-btn:hover {
             background-color: #0056b3;
         }
         .heading,.timer{
             display: flex;
-            display:inline ;
+            display: inline;
         }
-        .heading{
-            font-size: 25px;
-            font-weight: 10em;
-
+        .next-btn {
+            padding: 10px 20px;
+            float: right;
+            background-color: blue;
+            border: none;
+            border-radius: 3px;
+            color: white;
         }
-        .space{
-            border: 1px solid black;
+        .question-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 10px;
-            margin-bottom: 10px;
+        }
+        #question-count {
+            font-size: 1em;
+            font-weight: bold;
+            color: black;
+        }
+        .trophy {
+            width: 70%;
+            height: 20vh;
+            display: none;
+            margin: 10px auto;
+        }
+        .end{
+            color: black;
         }
     </style>
 </head>
 <body>
     <div class="quiz-container">
         <p class="heading">Pheonix Quiz</p>
-        <div class="timer">Time Left : <span id="time">15</span>s</div>
-        <div class="space"></div>
+        <div class="timer">Time Left <span id="time" class="digits">15</span></div>
         <div class="question">Question will appear here</div>
         <div class="options"></div>
-        <div class="result" style="display: none;">Your score: <span id="score">0</span></div>
-        <button class="restart-btn" onclick="quiz()" style="display: none;">Restart Quiz</button>
-        <button class="restart-btn" onclick="quiz()" style="display: none ;">Quit Quiz</button>
+        <div class="question-info">
+            <span id="question-count">1 out of 4 questions</span>
+            <button class="next-btn" onclick="nextQuestion()">Next Que</button>
+        </div>
+        <div class="result">
+            <img src="winner.png" class="trophy" id="trophy">
+            <p class="end">You've completed the Quiz!<br> you got <span id="score">0</span> out of 5</p>
+        </div>
+        <button class="restart-btn" id="restart" onclick="restartQuiz()">Restart Quiz</button>
+        <button class="quit-btn" id="quit" onclick="quitQuiz()">Quit Quiz</button>
     </div>
+
     <script>
         const quizData = [
-            {
-                question: "What is the capital of France?",
-                options: ["Berlin", "Madrid", "Paris", "Lisbon"],
-                answer: "Paris"
-            },
-            {
-                question: "Which language is used for web development?",
-                options: ["Python", "HTML", "Java", "C++"],
-                answer: "HTML"
-            },
-            {
-                question: "Who wrote 'Hamlet'?",
-                options: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"],
-                answer: "William Shakespeare"
-            }
+            { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Lisbon"], answer: "Paris" },
+            { question: "Which language is used for web development?", options: ["Python", "HTML", "Java", "C++"], answer: "HTML" },
+            { question: "Who wrote 'Hamlet'?", options: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"], answer: "William Shakespeare" }
         ];
+
         let currentQuestion = 0;
         let score = 0;
         let timeLeft = 15;
         let timerInterval;
+        let selectedOption = null;
+
         const timerEl = document.getElementById('time');
         const questionEl = document.querySelector('.question');
         const optionsEl = document.querySelector('.options');
         const resultEl = document.querySelector('.result');
         const scoreEl = document.getElementById('score');
-        const restartBtn = document.querySelector('.restart-btn');
+        const restartBtn = document.getElementById('restart');
+        const quitBtn = document.getElementById('quit');
+        const nextBtn = document.querySelector('.next-btn');
+        const trophyImg = document.getElementById('trophy');
+
         function loadQuestion() {
             if (currentQuestion >= quizData.length) {
                 endQuiz();
                 return;
             }
+
             clearInterval(timerInterval);
-            timeLeft = 15; 
+            timeLeft = 15;
             timerEl.textContent = timeLeft;
-            startTimer(); 
+            startTimer();
+
             const currentQuiz = quizData[currentQuestion];
             questionEl.textContent = currentQuiz.question;
             optionsEl.innerHTML = '';
+
+            document.getElementById('question-count').textContent = `${currentQuestion + 1} out of ${quizData.length} questions`;
+
             currentQuiz.options.forEach(option => {
                 const button = document.createElement('button');
                 button.classList.add('option');
                 button.textContent = option;
-                button.onclick = () => checkAnswer(option);
+                button.onclick = () => selectAnswer(button, option);
                 optionsEl.appendChild(button);
             });
+
+            nextBtn.style.display = 'none';
+            selectedOption = null;
         }
-        function checkAnswer(selectedOption) {
-            if (selectedOption === quizData[currentQuestion].answer) {
+
+        function selectAnswer(button, selected) {
+            if (selectedOption) return;
+            selectedOption = selected;
+
+            const correctAnswer = quizData[currentQuestion].answer;
+            if (selected === correctAnswer) {
+                button.classList.add('correct');
                 score++;
+            } else {
+                button.classList.add('incorrect');
+                document.querySelectorAll('.option').forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
             }
+
+            document.querySelectorAll('.option').forEach(btn => btn.disabled = true);
+            nextBtn.style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            if (!selectedOption) return;
             currentQuestion++;
             loadQuestion();
         }
+
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -158,31 +252,53 @@
                 }
             }, 1000);
         }
+
         function endQuiz() {
-            clearInterval(timerInterval);
-            questionEl.style.display = 'none';
-            optionsEl.style.display = 'none';
-            resultEl.style.display = 'block';
-            scoreEl.textContent = score;
-            timerEl.style.display = 'none';
-            restartBtn.style.display = 'block';
-            document.querySelector('.timer').style.display = 'none';
+    clearInterval(timerInterval);
+    questionEl.style.display = 'none';
+    optionsEl.style.display = 'none';
+    resultEl.style.display = 'block';
+    scoreEl.textContent = score;
+    trophyImg.style.display = 'block';
+    document.querySelector('.heading').style.display = 'none';
+    nextBtn.style.display = 'none';
+    document.getElementById('question-count').style.display = 'none';
+    
+    // Hide the timer on the score page
+    document.querySelector('.timer').style.display = 'none';
+
+    // Show Restart & Quit buttons only on score page
+    document.querySelector('.restart-btn').style.display = 'inline-block';
+    document.querySelector('.quit-btn').style.display = 'inline-block';
+}
+
+function restartQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    questionEl.style.display = 'block';
+    optionsEl.style.display = 'block';
+    resultEl.style.display = 'none';
+    trophyImg.style.display = 'none';
+
+    // Show the timer again when restarting
+    document.querySelector('.timer').style.display = 'block';
+
+    // Hide Restart & Quit buttons during quiz
+    document.querySelector('.restart-btn').style.display = 'none';
+    document.querySelector('.quit-btn').style.display = 'none';
+
+    loadQuestion();
+}
+
+
+        function quitQuiz() {
+            window.location.href = "home.html";
         }
-        restartBtn.addEventListener('click', () => {
-            currentQuestion = 0;
-            score = 0;
-            timeLeft = 15;
-            timerEl.textContent = timeLeft;
-            questionEl.style.display = 'block';
-            optionsEl.style.display = 'block';
-            resultEl.style.display = 'none';
-            restartBtn.style.display = 'none';
-            loadQuestion();
-        });
+        function restartQuiz() {
+            window.location.href = "instruction.html";
+        }
+
         loadQuestion();
-        function quiz(){
-        window.location.href = "instruction.html";
-    }
     </script>
 </body>
 </html>

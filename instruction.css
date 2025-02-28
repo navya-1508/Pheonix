@@ -10,56 +10,76 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #f4f4f4;
+    background: blue;
 }
 
 .container {
     background: white;
-    padding: 30px;
-    width: 400px;
-    text-align: center;
-    border-radius: 10px;
+    /* padding: 10px; */
+    width: 450px;
+    /* text-align: center; */
+    border-radius: 5px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
 }
 
 h2 {
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    margin-right: 110px;
+    padding: 10px;
+    /* float: left; */
 }
 
 ul {
     text-align: left;
     list-style: none;
     margin-bottom: 20px;
+    border-bottom: 1px solid rgb(139, 138, 138);
+    border-top: 1px solid rgb(129, 127, 127);
+    width: 100%;
 }
 
 ul li {
-    margin: 10px 0;
+    /* margin: 10px 5px; */
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
     font-size: 16px;
+    
 }
 
 .buttons {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    float: right;
+    gap:1em;
+    margin-bottom: 10px;
+    
 }
 
 button {
-    padding: 10px 15px;
-    border: none;
+    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    width: 45%;
+    /* width: 45%; */
 }
 
 .exit {
-    background: red;
-    color: white;
+    background: white;
+    color: blue;
+    border: 1.5px solid blue;
+    float: right;
+    
 }
 
 .continue {
-    background: green;
+    background: blue;
     color: white;
+    border: none;
+    float: right;
+    margin-right: 10px;
 }
 
 button:hover {
