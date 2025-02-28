@@ -21,3 +21,43 @@ button {
 body{
     background-color: rgb(54, 19, 250);
 }
+
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+    }
+    button{
+        padding: 10px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+    margin-left: 60px;
+    color: blue;
+    &:hover{
+        cursor: pointer;
+    }
+    }
+    
+    .quiz-container {
+        width: 95%;
+        max-width: 400px;
+        padding: 15px;
+    }
+    
+    #video {
+        top: 5px;
+        right: 5px;
+        width: 80px;
+        height: 80px;
+    }
+
+    #warning-message, #black-screen-message {
+        top: 90px;
+        right: 5px;
+        width: 120px;
+        font-size: 12px;
+    }
+}
