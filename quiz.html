@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pheonix Quiz</title>
+    <video id="video" autoplay></video>
+<p id="warning-message" style="color: red; font-weight: bold; display: none;">
+    Warning: No face detected! Please stay in front of the camera.
+</p>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -300,5 +304,68 @@ function restartQuiz() {
 
         loadQuestion();
     </script>
+    
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const warningMessage = document.getElementById('warning-message');
+    
+        async function loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/models');
+        }
+    
+        async function startVideo() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+    
+                // If video stops (user turns off camera), redirect
+                stream.getVideoTracks()[0].onended = () => {
+                    alert("Camera turned off. Redirecting...");
+                    window.location.href = "index.html";
+                };
+            } catch (error) {
+                console.error("Error accessing webcam: ", error);
+                alert("Camera access denied. Redirecting...");
+                window.location.href = "index.html"; // Redirect if access is denied
+            }
+        }
+    
+        async function detectFace() {
+            await loadModels(); // Ensure models are loaded before detecting faces
+            setInterval(async () => {
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
+                if (detections.length === 0) {
+                    warningMessage.style.display = "block"; // Show warning message
+                } else {
+                    warningMessage.style.display = "none"; // Hide warning when face is detected
+                }
+            }, 2000); // Check every 2 seconds
+        }
+    
+        video.addEventListener('play', detectFace);
+        startVideo();
+    </script>
+    
+    <style>
+        #video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+    
+        #warning-message {
+            position: absolute;
+            top: 120px;
+            right: 10px;
+            width: 150px;
+            text-align: center;
+        }
+    </style>
 </body>
 </html>
